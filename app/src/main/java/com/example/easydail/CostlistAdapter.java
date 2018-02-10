@@ -42,8 +42,23 @@ public class CostlistAdapter extends BaseAdapter {
     }
 
     @Override
-    public View getView(int i, View view, ViewGroup group) {
-        return null;
+    public View getView(int position, View convertView, ViewGroup parent) {
+        ViewHolder viewHolder;
+        if(convertView == null){
+            viewHolder = new ViewHolder();
+            convertView = mLayoutInflater.inflate(R.layout.list_item, null);
+            viewHolder.mTvCostTitle = (TextView) convertView.findViewById(R.id.tv_title);
+            viewHolder.mTvCostDate = (TextView) convertView.findViewById(R.id.tv_date);
+            viewHolder.mTvCostMoney = (TextView) convertView.findViewById(R.id.tv_cost);
+            convertView.setTag(viewHolder);
+        }else{
+            viewHolder = (ViewHolder) convertView.getTag();
+        }
+        CostBean bean = mList.get(position);
+        viewHolder.mTvCostTitle.setText(bean.costTitle);
+        viewHolder.mTvCostDate.setText(bean.costDate);
+        viewHolder.mTvCostMoney.setText(bean.costMoney);
+        return convertView;
     }
 
     private static class ViewHolder {

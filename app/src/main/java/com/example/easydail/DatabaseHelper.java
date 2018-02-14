@@ -31,12 +31,19 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         cv.put("cost_money", costBean.costMoney);
         database.insert("imooc_cost", null, cv);
     }
-    
+
     // 数据库查询方法
     public Cursor getAllCostData() {
         SQLiteDatabase database = getWritableDatabase();
         return database.query("imooc_cost", null, null,
-                null, null, null, "ASC");
+                null, null, null, "cost_data " + "ASC");
+    }
+
+
+    // 清空数据库
+    public void deleteAllData() {
+        SQLiteDatabase database = getWritableDatabase();
+        database.delete("imooc_cost", null, null);
     }
 
     @Override

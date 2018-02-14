@@ -1,5 +1,6 @@
 package com.example.easydail;
 
+import android.database.Cursor;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -16,6 +17,7 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
 
     private List<CostBean> mCostBeansList;
+    private DatabaseHelper mDatabaseHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,6 +26,7 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        mDatabaseHelper = new DatabaseHelper(this);
         mCostBeansList = new ArrayList<>();
         ListView costList = (ListView) findViewById(R.id.lv_main);
         initCostData(); // 一个用于测试 list_item 是否显示正常的方法
@@ -40,12 +43,24 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initCostData() {
+        mDatabaseHelper.deleteAllData();
         for (int i = 0; i < 6; i++) {
             CostBean costBean = new CostBean();
-            costBean.costTitle = "test";
+            costBean.costTitle = i + "test";
             costBean.costDate = "2-10";
             costBean.costMoney = "100";
-            mCostBeansList.add(costBean);
+            mDatabaseHelper.insertCost(costBean);
+        }
+        Cursor cursor = mDatabaseHelper.getAllCostData();
+        if (cursor != null) {
+            while (cursor.moveToNext()) {
+                CostBean costBean = new CostBean();
+                costBean.costTitle = cursor.getString(cursor.getColumnIndex("cost_title"));
+                costBean.costDate = cursor.getString(cursor.getColumnIndex("cost_data"));
+                costBean.costMoney = cursor.getString(cursor.getColumnIndex("cost_money"));
+                mCostBeansList.add(costBean);
+            }
+            cursor.close();
         }
     }
 

@@ -1,14 +1,18 @@
 package com.example.easydail;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.DatePicker;
+import android.widget.EditText;
 import android.widget.ListView;
 
 import java.util.ArrayList;
@@ -32,12 +36,26 @@ public class MainActivity extends AppCompatActivity {
         initCostData(); // 一个用于测试 list_item 是否显示正常的方法
         costList.setAdapter(new CostlistAdapter(this, mCostBeansList));
 
+        // 悬浮按钮，点击触发创建界面
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                LayoutInflater inflate = LayoutInflater.from(MainActivity.this);
+                View viewDialog = inflate.inflate(R.layout.new_cost_data, null);
+                EditText title = (EditText) viewDialog.findViewById(R.id.et_cost_title);
+                EditText money = (EditText) viewDialog.findViewById(R.id.et_cost_money);
+                DatePicker date = (DatePicker) viewDialog.findViewById(R.id.dp_cost_date);
+                builder.setView(viewDialog);
+                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                });
+                builder.setNegativeButton("Cancel", null);
+                builder.create().show();
             }
         });
     }

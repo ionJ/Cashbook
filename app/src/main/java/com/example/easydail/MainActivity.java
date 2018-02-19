@@ -22,6 +22,7 @@ public class MainActivity extends AppCompatActivity {
 
     private List<CostBean> mCostBeansList;
     private DatabaseHelper mDatabaseHelper;
+    private CostlistAdapter mAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,7 +35,8 @@ public class MainActivity extends AppCompatActivity {
         mCostBeansList = new ArrayList<>();
         ListView costList = (ListView) findViewById(R.id.lv_main);
         initCostData(); // 一个用于测试 list_item 是否显示正常的方法
-        costList.setAdapter(new CostlistAdapter(this, mCostBeansList));
+        mAdapter = new CostlistAdapter(this, mCostBeansList);
+        costList.setAdapter(mAdapter);
 
         // 悬浮按钮，点击触发创建界面
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -44,14 +46,22 @@ public class MainActivity extends AppCompatActivity {
                 AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
                 LayoutInflater inflate = LayoutInflater.from(MainActivity.this);
                 View viewDialog = inflate.inflate(R.layout.new_cost_data, null);
-                EditText title = (EditText) viewDialog.findViewById(R.id.et_cost_title);
-                EditText money = (EditText) viewDialog.findViewById(R.id.et_cost_money);
-                DatePicker date = (DatePicker) viewDialog.findViewById(R.id.dp_cost_date);
+                final EditText title = (EditText) viewDialog.findViewById(R.id.et_cost_title);
+                final EditText money = (EditText) viewDialog.findViewById(R.id.et_cost_money);
+                final DatePicker date = (DatePicker) viewDialog.findViewById(R.id.dp_cost_date);
                 builder.setView(viewDialog);
+                builder.setTitle("New Cost");
                 builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-
+                        CostBean costBean = new CostBean();
+                        costBean.costTitle = title.getText().toString();
+                        costBean.costMoney = money.getText().toString();
+                        costBean.costDate = date.getYear() + "-" + (date.getMonth() + 1) + "-"
+                                + date.getDayOfMonth();
+                        mDatabaseHelper.insertCost(costBean);
+                        mCostBeansList.add(costBean);
+                        mAdapter.notifyDataSetChanged();
                     }
                 });
                 builder.setNegativeButton("Cancel", null);
@@ -61,14 +71,14 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initCostData() {
-        mDatabaseHelper.deleteAllData();
-        for (int i = 0; i < 6; i++) {
-            CostBean costBean = new CostBean();
-            costBean.costTitle = i + "test";
-            costBean.costDate = "2-10";
-            costBean.costMoney = "100";
-            mDatabaseHelper.insertCost(costBean);
-        }
+//        mDatabaseHelper.deleteAllData();
+//        for (int i = 0; i < 6; i++) {
+//            CostBean costBean = new CostBean();
+//            costBean.costTitle = i + "test";
+//            costBean.costDate = "2-10";
+//            costBean.costMoney = "100";
+//            mDatabaseHelper.insertCost(costBean);
+//        }
         Cursor cursor = mDatabaseHelper.getAllCostData();
         if (cursor != null) {
             while (cursor.moveToNext()) {

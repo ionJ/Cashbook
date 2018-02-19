@@ -9,6 +9,11 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
 
+    public static final String COST_MONEY = "cost_money";
+    public static final String COST_DATA = "cost_data";
+    public static final String COST_TITLE = "cost_title";
+    public static final String IMOOC_COST = "imooc_cost";
+
     public DatabaseHelper(Context context) {
         super(context, "imooc_daily", null, 1);
     }
@@ -26,24 +31,24 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public void insertCost(CostBean costBean) {
         SQLiteDatabase database = getWritableDatabase();
         ContentValues cv = new ContentValues();
-        cv.put("cost_title", costBean.costTitle);
-        cv.put("cost_data", costBean.costDate);
-        cv.put("cost_money", costBean.costMoney);
-        database.insert("imooc_cost", null, cv);
+        cv.put(COST_TITLE, costBean.costTitle);
+        cv.put(COST_DATA, costBean.costDate);
+        cv.put(COST_MONEY, costBean.costMoney);
+        database.insert(IMOOC_COST, null, cv);
     }
 
     // 数据库查询方法
     public Cursor getAllCostData() {
         SQLiteDatabase database = getWritableDatabase();
-        return database.query("imooc_cost", null, null,
-                null, null, null, "cost_data " + "ASC");
+        return database.query(IMOOC_COST, null, null,
+                null, null, null, COST_DATA + " ASC");
     }
 
 
     // 清空数据库
     public void deleteAllData() {
         SQLiteDatabase database = getWritableDatabase();
-        database.delete("imooc_cost", null, null);
+        database.delete(IMOOC_COST, null, null);
     }
 
     @Override

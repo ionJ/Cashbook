@@ -2,6 +2,7 @@ package com.example.easydail;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -15,6 +16,7 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ListView;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -101,13 +103,12 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
+        if (id == R.id.action_chart) {
+            Intent intent = new Intent(MainActivity.this, ChartsAcitvity.class);
+            intent.putExtra("cost_list", (Serializable) mCostBeansList);
+            startActivity(intent);
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
             return true;
         }
 
